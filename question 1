@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tech Symposium - Registration</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f7f9fc;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      padding: 1.5rem;
+    }
+    .card-custom {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      background: white;
+      border: 1px solid #eef2f6;
+    }
+    .form-control:focus {
+      box-shadow: 0 0 0 0.15rem rgba(13,110,253,0.12);
+    }
+    .help-text {
+      font-size: 0.85rem;
+      color: #6c757d;
+    }
+    .invalid {
+      border-color: #dc3545 !important;
+      background: #fff5f6;
+    }
+    .valid {
+      border-color: #198754 !important;
+      background: #f6fffa;
+    }
+    @media (max-width: 480px) {
+      body { padding: 1rem; }
+      .card-custom { padding: 0.75rem; }
+      h1 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card-custom">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="h4 mb-0">Tech Symposium — Participant Registration</h1>
+      <small class="text-muted">Responsive • Simple • Preview before submit</small>
+    </div>
+    <form id="regForm" novalidate>
+      <div class="container">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="name" class="form-label">Full name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="Your full name" required>
+            <div class="help-text" id="nameHelp">Enter your first and last name.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+            <div class="help-text" id="emailHelp">We'll use this to send confirmation.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-control" placeholder="10-digit phone" pattern="[0-9]{10}">
+            <div class="help-text" id="phoneHelp">Numbers only, e.g. 9876543210 (optional)</div>
+          </div>
+          <div class="col-md-6">
+            <label for="eventSelect" class="form-label">Choose event</label>
+            <input list="events" id="eventSelect" name="event" class="form-control" placeholder="Start typing or pick one" required>
+            <datalist id="events">
+              <option value="AI & Machine Learning Workshop">
+              <option value="Cloud & DevOps Panel">
+              <option value="Competitive Coding Contest">
+              <option value="Robotics Demo">
+              <option value="Hackathon - 24 Hours">
+            </datalist>
+            <div class="help-text">Select one event to register for.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Attendance</label>
+            <select name="attendance" id="attendance" class="form-select">
+              <option value="inperson" selected>In-person</option>
+              <option value="online">Online</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
+            <div class="help-text">Choose how you will attend.</div>
+          </div>
+          <div class="col-12">
+            <label for="comment" class="form-label">Any comments / requirements</label>
+            <textarea id="comment" name="comment" rows="3" class="form-control" placeholder="Dietary needs, accessibility requests, team members, etc."></textarea>
+          </div>
+          <div class="col-12">
+            <div class="p-2 border rounded help-text">
+              Live preview: <span id="livePreview">No input yet.</span>
+            </div>
+          </div>
+          <div class="col-12 d-flex gap-2 justify-content-end">
+            <button type="button" id="clearBtn" class="btn btn-outline-secondary">Clear</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary">Preview & Submit</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="previewModalLabel">Confirm your registration</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row">
+            <dt class="col-4">Name</dt><dd class="col-8" id="pName"></dd>
+            <dt class="col-4">Email</dt><dd class="col-8" id="pEmail"></dd>
+            <dt class="col-4">Phone</dt><dd class="col-8" id="pPhone"></dd>
+            <dt class="col-4">Event</dt><dd class="col-8" id="pEvent"></dd>
+            <dt class="col-4">Attendance</dt><dd class="col-8" id="pAttend"></dd>
+            <dt class="col-4">Notes</dt><dd class="col-8" id="pNotes"></dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="editBtn" class="btn btn-secondary" data-bs-dismiss="modal">Edit</button>
+          <button type="button" id="confirmBtn" class="btn btn-success">Confirm & Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+  <script>
+    $(function() {
+      function isEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+      function isPhone(p) { return p === "" || /^[0-9]{10}$/.test(p); }
+
+      function updateLivePreview() {
+        const n = $('#name').val().trim() || "—";
+        const ev = $('#eventSelect').val().trim() || "—";
+        const at = $('#attendance').val();
+        $('#livePreview').text(`${n} — ${ev} (${at})`);
+      }
+
+      updateLivePreview();
+
+      $('#name').on('focus', function() {
+        $('#nameHelp').text('Include first and last name.').css('color','#6c757d');
+      }).on('blur', function() {
+        const val = $(this).val().trim();
+        if (!val) {
+          $('#nameHelp').text('Name is required.').css('color','#dc3545');
+          $(this).addClass('invalid').removeClass('valid');
+        } else {
+          $('#nameHelp').text('Looks good.').css('color','#198754');
+          $(this).addClass('valid').removeClass('invalid');
+        }
+        updateLivePreview();
+      });
+      $('#email').on('focus', function() {
+        $('#emailHelp').text('We will email event details.').css('color','#6c757d');
+      }).on('blur', function() {
+        const val = $(this).val().trim();
+        if (!isEmail(val)) {
+          $('#emailHelp').text('Enter a valid email address.').css('color','#dc3545');
+          $(this).addClass('invalid').removeClass('valid');
+        } else {
+          $('#emailHelp').text('Email looks good.').css('color','#198754');
+          $(this).addClass('valid').removeClass('invalid');
+        }
+        updateLivePreview();
+      });
+      $('#phone').on('blur', function() {
+        const val = $(this).val().trim();
+        if (!isPhone(val)) {
+          $('#phoneHelp').text('Phone should be 10 digits or left empty.').css('color','#dc3545');
+          $(this).addClass('invalid').removeClass('valid');
+        } else {
+          $('#phoneHelp').text('Optional phone looks fine.').css('color','#198754');
+          $(this).addClass('valid').removeClass('invalid');
+        }
+      });
+      $('#eventSelect, #attendance, #comment').on('input change', function() {
+        updateLivePreview();
+      });
+      $('#clearBtn').on('click', function() {
+        $('#regForm')[0].reset();
+        $('.help-text').css('color','#6c757d');
+        $('.form-control').removeClass('valid invalid');
+        updateLivePreview();
+      });
+      $('#regForm').on('submit', function(e) {
+        e.preventDefault();
+        const name = $('#name').val().trim();
+        const email = $('#email').val().trim();
+        const phone = $('#phone').val().trim();
+        const eventVal = $('#eventSelect').val().trim();
+        const attend = $('#attendance').val();
+        const notes = $('#comment').val().trim();
+
+        let ok = true;
+        if (!name) { $('#name').addClass('invalid').removeClass('valid'); ok = false; }
+        if (!isEmail(email)) { $('#email').addClass('invalid').removeClass('valid'); ok = false; }
+        if (!isPhone(phone)) { $('#phone').addClass('invalid').removeClass('valid'); ok = false; }
+        if (!eventVal) { $('#eventSelect').addClass('invalid').removeClass('valid'); ok = false; }
+
+        if (!ok) {
+          alert('Please fix the highlighted fields before previewing.');
+          return;
+        }
+        $('#pName').text(name);
+        $('#pEmail').text(email);
+        $('#pPhone').text(phone || '—');
+        $('#pEvent').text(eventVal);
+        $('#pAttend').text(attend);
+        $('#pNotes').text(notes || '—');
+        const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+        previewModal.show();
+      });
+      $('#confirmBtn').on('click', function() {
+        $('#previewModal').modal('hide');
+        alert('Registration submitted! Thank you — check your email for details.');
+        $('#regForm')[0].reset();
+        $('.form-control').removeClass('valid invalid');
+        updateLivePreview();
+      });
+    });
+  </script>
+</body>
+</html>
