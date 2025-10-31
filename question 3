@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Travel Booking</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root{--bg:#ffffff;--card:#ffffff;--muted:#6c757d}
+    body{background:var(--bg);color:#222;font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    .hero{padding:1.25rem 0}
+    .search-bar{position:sticky;top:0;z-index:10;background:linear-gradient(rgba(255,255,255,.95),rgba(255,255,255,.95));backdrop-filter:blur(6px);padding:.75rem 0}
+    .destination-card{border-radius:.6rem;box-shadow:0 6px 18px rgba(16,24,40,.08);overflow:hidden;transition:transform .18s,box-shadow .18s}
+    .destination-card:hover{transform:translateY(-6px);box-shadow:0 18px 36px rgba(16,24,40,.12)}
+    .card-media{height:160px;object-fit:cover;width:100%;display:block}
+    .price-chip{position:absolute;right:0;top:8px;background:#0d6efd;color:#fff;padding:.25rem .5rem;border-bottom-left-radius:.5rem}
+    .badge-floating{position:absolute;left:8px;top:8px}
+    @media(min-width:992px){.card-media{height:180px}}
+    .filter-row .form-range{height:6px}
+    .invalid-feedback{display:block}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero d-flex align-items-center justify-content-between">
+      <h1 class="h4 mb-0">Explore & Book</h1>
+      <div class="d-flex gap-2 align-items-center">
+        <span class="badge bg-info text-dark">Best Prices</span>
+        <button id="openFilters" class="btn btn-outline-secondary btn-sm">Filters</button>
+      </div>
+    </header>
+
+    <div class="search-bar mb-3">
+      <form id="searchForm" class="row g-2 align-items-center">
+        <div class="col-12 col-md-4">
+          <input list="destList" id="searchInput" class="form-control" placeholder="Search destinations" autocomplete="on" />
+          <datalist id="destList">
+            <option value="Bali"></option>
+            <option value="Paris"></option>
+            <option value="Tokyo"></option>
+            <option value="New York"></option>
+          </datalist>
+        </div>
+        <div class="col-6 col-md-2">
+          <input id="dateIn" type="date" class="form-control" />
+        </div>
+        <div class="col-6 col-md-2">
+          <input id="priceRange" type="range" min="50" max="2000" step="10" value="200" class="form-range" />
+        </div>
+        <div class="col-12 col-md-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">Search</button>
+          <button id="clearFilters" type="button" class="btn btn-outline-secondary">Clear</button>
+        </div>
+      </form>
+    </div>
+
+    <section class="filter-row mb-3">
+      <div class="d-flex gap-3 align-items-center">
+        <div class="small text-muted">Max price: $<span id="priceLabel">200</span></div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="true" id="onlyDirect" />
+          <label class="form-check-label small text-muted" for="onlyDirect">Direct flights</label>
+        </div>
+      </div>
+    </section>
+
+    <main id="results" class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="position-relative destination-card card" data-name="Bali" data-price="199" data-direct="true" tabindex="0">
+          <img class="card-media" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=0" alt="Bali beach">
+          <div class="price-chip">$199</div>
+          <div class="badge-floating"><span class="badge bg-success">Popular</span></div>
+          <div class="card-body">
+            <h5 class="card-title mb-1">Bali</h5>
+            <p class="text-muted small mb-2">Tropical beaches · Culture · Surf</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <button class="btn btn-sm btn-outline-primary detailsBtn">Details</button>
+                <button class="btn btn-sm btn-primary bookBtn">Book</button>
+              </div>
+              <div class="small text-muted">Direct</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="position-relative destination-card card" data-name="Paris" data-price="349" data-direct="false" tabindex="0">
+          <img class="card-media" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1" alt="Paris">
+          <div class="price-chip">$349</div>
+          <div class="badge-floating"><span class="badge bg-warning text-dark">City</span></div>
+          <div class="card-body">
+            <h5 class="card-title mb-1">Paris</h5>
+            <p class="text-muted small mb-2">Museums · Romance · Food</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <button class="btn btn-sm btn-outline-primary detailsBtn">Details</button>
+                <button class="btn btn-sm btn-primary bookBtn">Book</button>
+              </div>
+              <div class="small text-muted">1 stop</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-4">
+        <div class="position-relative destination-card card" data-name="New York" data-price="299" data-direct="true" tabindex="0">
+          <img class="card-media" src="https://images.unsplash.com/photo-1549921296-3d0c6b6c9fe1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=2" alt="New York">
+          <div class="price-chip">$299</div>
+          <div class="badge-floating"><span class="badge bg-secondary">Urban</span></div>
+          <div class="card-body">
+            <h5 class="card-title mb-1">New York</h5>
+            <p class="text-muted small mb-2">Nightlife · Culture · Food</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <button class="btn btn-sm btn-outline-primary detailsBtn">Details</button>
+                <button class="btn btn-sm btn-primary bookBtn">Book</button>
+              </div>
+              <div class="small text-muted">Direct</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="text-center text-muted small py-4">© Travel Co</footer>
+  </div>
+
+  <div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="modalTitle" class="modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id="modalBody" class="modal-body"></div>
+        <div class="modal-footer">
+          <button id="modalBook" type="button" class="btn btn-primary">Book Now</button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="bookingForm" class="needs-validation" novalidate>
+          <div class="modal-header">
+            <h5 id="bookTitle" class="modal-title">Book Ticket</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="travelerName" class="form-label">Full name</label>
+              <input id="travelerName" type="text" class="form-control" required />
+              <div class="invalid-feedback">Please enter your name</div>
+            </div>
+            <div class="mb-3">
+              <label for="travelerEmail" class="form-label">Email</label>
+              <input id="travelerEmail" type="email" class="form-control" required />
+              <div class="invalid-feedback">Please enter a valid email</div>
+            </div>
+            <div class="mb-3">
+              <label for="travelDate" class="form-label">Travel date</label>
+              <input id="travelDate" type="date" class="form-control" required />
+              <div class="invalid-feedback" id="dateFeedback"></div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Amount</label>
+              <div><span id="bookPrice" class="fw-bold"></span></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="confirmBooking" type="submit" class="btn btn-success">Confirm</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function(){
+      var detailsModal=new bootstrap.Modal(document.getElementById('detailsModal'));
+      var bookModal=new bootstrap.Modal(document.getElementById('bookModal'));
+      $('#priceRange').on('input change',function(){ $('#priceLabel').text($(this).val()); });
+      $('#searchForm').on('submit',function(e){ e.preventDefault(); applyFilters(); $('html,body').animate({scrollTop:$('#results').offset().top-60},300); });
+      $('#clearFilters').on('click',function(){ $('#searchInput').val(''); $('#dateIn').val(''); $('#priceRange').val(200); $('#priceLabel').text(200); $('#onlyDirect').prop('checked',false); applyFilters(); });
+      function applyFilters(){
+        var q=$('#searchInput').val().toLowerCase();
+        var max=Number($('#priceRange').val());
+        var onlyDirect=$('#onlyDirect').is(':checked');
+        $('#results .destination-card').each(function(){
+          var el=$(this);
+          var name=el.data('name').toString().toLowerCase();
+          var price=Number(el.data('price'));
+          var direct=el.data('direct')===true||el.data('direct')==='true';
+          var match=(q?name.indexOf(q)!==-1:true);
+          var priceOk=price<=max;
+          var directOk=!onlyDirect||direct;
+          el.closest('.col-12').toggle(match&&priceOk&&directOk);
+        });
+      }
+      $('#results').on('click','.detailsBtn',function(e){
+        var card=$(this).closest('.destination-card');
+        showDetails(card);
+      });
+      $('#results').on('click','.bookBtn',function(e){
+        var card=$(this).closest('.destination-card');
+        openBooking(card);
+      });
+      $('#results').on('click','.destination-card',function(e){
+        if($(e.target).is('button')||$(e.target).is('a')||$(e.target).closest('button,a').length) return;
+        var card=$(this);
+        $('html,body').animate({scrollTop:$(this).offset().top-40},200);
+      });
+      function showDetails(card){
+        var name=card.data('name');
+        var price=card.data('price');
+        var direct=card.data('direct')===true||card.data('direct')==='true'?'Direct flight':'Stopover';
+        $('#modalTitle').text(name);
+        $('#modalBody').html('<p class="mb-2">Sample description for '+name+'.</p><p class="mb-0"><strong>Price:</strong> $'+price+'</p><p class="mb-0 text-muted">'+direct+'</p>');
+        $('#modalBook').off('click').on('click',function(){ openBooking(card); detailsModal.hide(); });
+        detailsModal.show();
+      }
+      function openBooking(card){
+        var name=card.data('name');
+        var price=card.data('price');
+        $('#bookTitle').text('Book ' + name);
+        $('#bookPrice').text('$' + price);
+        $('#bookingForm')[0].reset();
+        $('#dateFeedback').text('');
+        $('#bookingForm').off('submit').on('submit',function(e){ e.preventDefault(); submitBooking(price); });
+        bookModal.show();
+      }
+      function submitBooking(price){
+        var name=$('#travelerName').val().trim();
+        var email=$('#travelerEmail').val().trim();
+        var date=$('#travelDate').val();
+        var valid=true;
+        if(!name){ valid=false; $('#travelerName').addClass('is-invalid'); }else{ $('#travelerName').removeClass('is-invalid'); }
+        if(!email||!/^\S+@\S+\.\S+$/.test(email)){ valid=false; $('#travelerEmail').addClass('is-invalid'); }else{ $('#travelerEmail').removeClass('is-invalid'); }
+        var now=new Date(); var sel=date?new Date(date + 'T00:00:00') : null;
+        if(!sel || sel<=now){ valid=false; $('#travelDate').addClass('is-invalid'); $('#dateFeedback').text('Please pick a future date'); }else{ $('#travelDate').removeClass('is-invalid'); $('#dateFeedback').text(''); }
+        if(!valid) return;
+        var payload={name:name,email:email,date:date,amount:price};
+        $('#confirmBooking').prop('disabled',true).text('Processing...');
+        setTimeout(function(){
+          $('#confirmBooking').prop('disabled',false).text('Confirm');
+          bookModal.hide();
+          alert('Booking confirmed for ' + payload.name + ' on ' + payload.date + '. Total: $' + payload.amount);
+        },700);
+      }
+      $('.destination-card').on('keydown',function(e){ if(e.key==='Enter') $(this).find('.detailsBtn').trigger('click'); });
+    })();
+  </script>
+</body>
+</html>
+
